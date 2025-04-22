@@ -173,3 +173,41 @@
   * The department management system provides a foundation for file management as files are associated with departments
   * All UI elements maintain responsive design following the existing project conventions
   * The code follows the SOLID principles outlined in the architecture document
+  
+## **[Milestone: Subphase 2.2 File Registration System]**
+
+* **Date Completed:** April 22, 2025
+
+* **Main Feature Implemented:**
+  * Developed a complete file registration system with CRUD functionality, real-time search capabilities, status management, and a dynamic Livewire-based interface for improved user experience.
+
+* **Key Files Created/Updated:**
+  * Updated `app/Http/Controllers/FileController.php` (added CRUD methods)
+  * Updated `app/Repositories/FileRepository.php` (added search and filtering)
+  * Updated `app/Repositories/Interfaces/FileRepositoryInterface.php` (added searchFiles method)
+  * Updated `resources/views/files/index.blade.php` (modified to use Livewire component)
+  * (NEW) `resources/views/files/create.blade.php` (file creation form)
+  * (NEW) `resources/views/files/edit.blade.php` (file editing form)
+  * (NEW) `resources/views/files/show.blade.php` (file detail view with borrowing history)
+  * (NEW) `app/Livewire/FileManagementTable.php` (Livewire component for dynamic file listing)
+  * (NEW) `resources/views/livewire/file-management-table.blade.php` (Livewire component view)
+
+* **Summary of Changes:**
+  * Implemented full CRUD operations for files with proper validation
+  * Created form interfaces for adding and editing files with departmental relationships
+  * Developed detailed file view showing file information and borrowing history
+  * Added real-time search and filter capabilities using Livewire
+  * Implemented color-coded status indicators for file availability
+  * Fixed repository pattern implementation with proper parameter ordering
+  * Added pagination for file listings
+  * Ensured proper role-based access control limiting file management to admin users
+
+* **Notes & Observations:**
+  * The file registration system follows the repository pattern established in earlier phases
+  * Livewire components in this project use the `App\Livewire` namespace (not `App\Http\Livewire`)
+  * File validation ensures reference numbers are unique across the system
+  * The interface uses color coding (green for available, yellow for borrowed, red for overdue)
+  * Status management aligns with the requirements in the architecture document
+  * The implementation follows Tailwind CSS patterns established in the department management module
+  * Real-time search and filtering improve user experience over traditional form submission
+  * The borrowing history is displayed on the file detail page, showing the complete lifecycle

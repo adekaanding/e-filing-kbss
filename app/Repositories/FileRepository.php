@@ -31,4 +31,29 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
     {
         return $this->model->where('department_id', $departmentId)->get();
     }
+
+    /**
+     * Search files with optional filtering.
+     */
+    public function searchFiles($search = null, $departmentId = null, $status = null)
+    {
+        $query = $this->model->with('department');
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('reference_no', 'like', "%{$search}%")
+                    ->orWhere('title', 'like', "%{$search}%");
+            });
+        }
+
+        if ($departmentId) {
+            $query->where('department_id', $departmentId);
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->latest()->paginate(10);
+    }
 }

@@ -23,6 +23,7 @@ app/Http/Middleware/TrustHosts.php
 app/Http/Middleware/TrustProxies.php
 app/Http/Middleware/ValidateSignature.php
 app/Http/Middleware/VerifyCsrfToken.php
+app/Livewire/FileManagementTable.php
 app/Models/Borrowing.php
 app/Models/Department.php
 app/Models/File.php
@@ -94,10 +95,14 @@ resources/views/departments/create.blade.php
 resources/views/departments/edit.blade.php
 resources/views/departments/index.blade.php
 resources/views/departments/show.blade.php
+resources/views/files/create.blade.php
+resources/views/files/edit.blade.php
 resources/views/files/index.blade.php
+resources/views/files/show.blade.php
 resources/views/history/index.blade.php
 resources/views/layouts/app.blade.php
 resources/views/layouts/guest.blade.php
+resources/views/livewire/file-management-table.blade.php
 resources/views/welcome.blade.php
 routes/api.php
 routes/channels.php

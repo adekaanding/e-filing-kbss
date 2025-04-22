@@ -8,4 +8,5 @@ interface FileRepositoryInterface extends RepositoryInterface
     public function getBorrowedFiles();
     public function getOverdueFiles();
     public function getFilesByDepartment($departmentId);
+    public function searchFiles($search, $departmentId, $status);
 }
