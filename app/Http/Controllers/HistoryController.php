@@ -13,6 +13,7 @@ class HistoryController extends Controller
     public function __construct(BorrowingRepositoryInterface $borrowingRepository)
     {
         $this->borrowingRepository = $borrowingRepository;
+        $this->middleware('auth');
     }
 
     public function index(Request $request)
@@ -33,7 +34,7 @@ class HistoryController extends Controller
             }
         }
 
-        return view('history.index', compact('borrowings', 'status'));
+        return view('history.index', compact('status'));
     }
 
     /**

@@ -139,4 +139,75 @@ class BorrowingRepository extends BaseRepository implements BorrowingRepositoryI
 
         return $days;
     }
+    /**
+     * Get borrowings with advanced filtering and sorting options.
+     *
+     * @param string|null $search
+     * @param string|null $status
+     * @param int|null $departmentId
+     * @param \Carbon\Carbon|null $startDate
+     * @param \Carbon\Carbon|null $endDate
+     * @param string $sortField
+     * @param string $sortDirection
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function getAdvancedFilteredBorrowings(
+        $search = null,
+        $status = null,
+        $departmentId = null,
+        $startDate = null,
+        $endDate = null,
+        $sortField = 'borrow_date',
+        $sortDirection = 'desc'
+    ) {
+        $query = $this->model->with(['file.department', 'officer']);
+
+        // Search filter
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('borrower_name', 'like', "%{$search}%")
+                    ->orWhereHas('file', function ($fileQuery) use ($search) {
+                        $fileQuery->where('reference_no', 'like', "%{$search}%")
+                            ->orWhere('title', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        // Status filter
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        // Department filter
+        if ($departmentId) {
+            $query->whereHas('file', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
+        }
+
+        // Date range filters
+        if ($startDate) {
+            $query->where('borrow_date', '>=', $startDate);
+        }
+
+        if ($endDate) {
+            $query->where('borrow_date', '<=', $endDate);
+        }
+
+        // Handle sorting
+        // Validate sortField to prevent SQL injection
+        $allowedSortFields = ['borrower_name', 'borrow_date', 'return_date', 'status'];
+
+        if ($sortField === 'file_id') {
+            $query->join('files', 'borrowings.file_id', '=', 'files.id')
+                ->orderBy('files.reference_no', $sortDirection)
+                ->select('borrowings.*'); // Ensure we only select borrowings columns
+        } else {
+            $sortField = in_array($sortField, $allowedSortFields) ? $sortField : 'borrow_date';
+            $sortDirection = strtolower($sortDirection) === 'asc' ? 'asc' : 'desc';
+            $query->orderBy($sortField, $sortDirection);
+        }
+
+        return $query->paginate(10);
+    }
 }
