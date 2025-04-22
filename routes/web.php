@@ -23,20 +23,34 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+// Authentication routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// Routes that will require authentication in Subphase 1.4
-Route::group(['prefix' => 'dashboard'], function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// Protected routes
+Route::middleware(['auth'])->group(function () {
+    // User profile routes
+    Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
 
-    // File routes
-    Route::resource('files', FileController::class);
+    // Dashboard routes
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Borrowing routes
-    Route::get('/borrow', [BorrowingController::class, 'create'])->name('borrowings.create');
-    Route::post('/borrow', [BorrowingController::class, 'store'])->name('borrowings.store');
-    Route::put('/borrow/{id}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
+    // File routes - Accessible only by File Admin
+    Route::middleware(['check.role:admin'])->group(function () {
+        Route::resource('files', FileController::class);
+    });
 
-    // History routes
-    Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    // Borrowing routes - Accessible by both File Admin and File Officer
+    Route::middleware(['check.role:officer'])->group(function () {
+        Route::get('/borrow', [BorrowingController::class, 'create'])->name('borrowings.create');
+        Route::post('/borrow', [BorrowingController::class, 'store'])->name('borrowings.store');
+        Route::put('/borrow/{id}/return', [BorrowingController::class, 'return'])->name('borrowings.return');
+    });
+
+    // History routes - Accessible by both File Admin and File Officer
+    Route::middleware(['check.role:officer'])->group(function () {
+        Route::get('/history', [HistoryController::class, 'index'])->name('history.index');
+    });
 });

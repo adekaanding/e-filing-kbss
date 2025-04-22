@@ -100,3 +100,41 @@
   * Controllers are set up with dependency injection to facilitate unit testing
   * The file structure adheres to Laravel conventions while incorporating the repository pattern architecture
   * Git workflow established with feature branching for collaborative development
+
+## **[Milestone: Subphase 1.4 Authentication System]**
+
+* **Date Completed:** April 22, 2025
+
+* **Main Feature Implemented:**
+  * Implemented user authentication system with role-based access control, login/logout functionality, and basic profile management for the e-Filing KBSS application.
+
+* **Key Files Created/Updated:**
+  * (NEW) app/Repositories/Interfaces/UserRepositoryInterface.php
+  * (NEW) app/Repositories/UserRepository.php
+  * (NEW) app/Http/Middleware/CheckRole.php
+  * (NEW) app/Http/Controllers/AuthController.php
+  * (NEW) resources/views/layouts/guest.blade.php
+  * (NEW) resources/views/auth/login.blade.php
+  * (NEW) resources/views/auth/profile.blade.php
+  * Updated app/Providers/RepositoryServiceProvider.php (added UserRepository binding)
+  * Updated routes/web.php (added authentication routes and role-based middleware)
+  * Updated app/Http/Kernel.php (registered CheckRole middleware)
+
+* **Summary of Changes:**
+  * Implemented repository pattern for user management following project architecture
+  * Created role-based middleware to restrict access based on user roles (File Admin, File Officer)
+  * Developed a clean login interface with remember me functionality
+  * Implemented user profile management for viewing and updating profile information
+  * Set up proper authentication routes with middleware protection
+  * Added logout functionality with proper session management
+  * Updated application layout to display authenticated user information
+  * Created a dedicated guest layout for the login page
+
+* **Notes & Observations:**
+  * The authentication system follows the repository pattern established in earlier subphases
+  * Role-based access is implemented using a custom middleware that checks for Admin and Officer roles
+  * The guest layout provides a cleaner interface for the login page without sidebar or header components
+  * The User model already contained helper methods (isAdmin, isOfficer) which were leveraged for authorization
+  * Authentication is built on Laravel's built-in auth system for security and maintainability
+  * Routes are organized by role requirements, simplifying permission management
+  * Profile management is lightweight, focusing on basic user information without password changing functionality
