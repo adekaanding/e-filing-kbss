@@ -4,11 +4,17 @@
         <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
                 <label for="search" class="block text-sm font-medium text-gray-700">Search</label>
-                <input type="text" wire:model.debounce.300ms="search" id="search" class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Reference No or Title">
+                <div class="mt-1 flex rounded-md shadow-sm">
+                    <input type="text"
+                        wire:model.live.debounce.300ms="search"
+                        id="search"
+                        class="focus:ring-primary focus:border-primary flex-1 block w-full rounded-md sm:text-sm border-gray-300"
+                        placeholder="Reference No or Title">
+                </div>
             </div>
             <div>
                 <label for="department" class="block text-sm font-medium text-gray-700">Department</label>
-                <select wire:model="department" id="department" class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                <select wire:model.live="department" id="department" class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     <option value="">All Departments</option>
                     @foreach($departments as $dept)
                     <option value="{{ $dept->id }}">{{ $dept->name }}</option>
@@ -17,7 +23,7 @@
             </div>
             <div>
                 <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                <select wire:model="status" id="status" class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                <select wire:model.live="status" id="status" class="mt-1 focus:ring-primary focus:border-primary block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
                     <option value="">All Statuses</option>
                     <option value="{{ App\Models\File::STATUS_AVAILABLE }}">Available</option>
                     <option value="{{ App\Models\File::STATUS_BORROWED }}">Dalam Pinjaman</option>
@@ -25,15 +31,25 @@
                 </select>
             </div>
         </div>
+        <div class="mt-4 flex justify-end">
+            <button wire:click="clearSearch" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+                Clear Filters
+            </button>
+        </div>
     </div>
 
     <!-- Loading indicator -->
-    <div wire:loading class="mb-4">
-        <div class="flex justify-center">
-            <div class="inline-flex items-center px-4 py-2 text-sm text-gray-700">
-                Loading...
-            </div>
-        </div>
+    <div wire:loading class="mb-4 text-center">
+        <span class="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-gray-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Searching...
+        </span>
     </div>
 
     <div class="overflow-x-auto">

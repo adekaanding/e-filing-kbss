@@ -40,6 +40,9 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         $query = $this->model->with('department');
 
         if ($search) {
+            // Add debug log here
+            \Log::debug("Searching for: " . $search);
+
             $query->where(function ($q) use ($search) {
                 $q->where('reference_no', 'like', "%{$search}%")
                     ->orWhere('title', 'like', "%{$search}%");

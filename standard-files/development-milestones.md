@@ -202,6 +202,15 @@
   * Added pagination for file listings
   * Ensured proper role-based access control limiting file management to admin users
 
+* **Bug Fixes:**
+  * **Livewire Search Functionality**
+    * Updated `$updatesQueryString` to `$queryString` property in FileManagementTable component for proper URL synchronization
+    * Replaced `wire:model.debounce` with `wire:model.live.debounce` for improved reactivity
+    * Added individual methods (`updatedSearch`, `updatedDepartment`, `updatedStatus`) to handle pagination reset
+    * Removed redundant `wire:change="$refresh"` calls from select elements
+    * Added a "Clear Filters" button to quickly reset search criteria
+    * Fixed component reactivity to ensure real-time updates of search results
+
 * **Notes & Observations:**
   * The file registration system follows the repository pattern established in earlier phases
   * Livewire components in this project use the `App\Livewire` namespace (not `App\Http\Livewire`)

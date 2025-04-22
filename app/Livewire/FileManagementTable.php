@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use Livewire\Component;
 use App\Models\Department;
-use App\Models\File;
+use App\Repositories\Interfaces\FileRepositoryInterface;
 use Livewire\WithPagination;
 
 class FileManagementTable extends Component
@@ -17,41 +17,55 @@ class FileManagementTable extends Component
     public $department = '';
     public $status = '';
 
-    // Reset pagination when filters change
-    public function updatingSearch()
+    protected $fileRepository;
+
+    // Replace the outdated property with the correct Livewire property name
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'department' => ['except' => ''],
+        'status' => ['except' => '']
+    ];
+
+    // Ensure we reset pagination when search parameters change
+    public function updatedSearch()
     {
         $this->resetPage();
     }
 
-    public function updatingDepartment()
+    public function updatedDepartment()
     {
         $this->resetPage();
     }
 
-    public function updatingStatus()
+    public function updatedStatus()
     {
         $this->resetPage();
+    }
+
+    public function clearSearch()
+    {
+        $this->search = '';
+        $this->department = '';
+        $this->status = '';
+        $this->resetPage();
+    }
+
+    // Inject repository using Livewire's boot method
+    public function boot(FileRepositoryInterface $fileRepository)
+    {
+        $this->fileRepository = $fileRepository;
     }
 
     public function render()
     {
         $departments = Department::all();
 
-        $files = File::with('department')
-            ->when($this->search, function ($query) {
-                $query->where(function ($q) {
-                    $q->where('reference_no', 'like', "%{$this->search}%")
-                        ->orWhere('title', 'like', "%{$this->search}%");
-                });
-            })
-            ->when($this->department, function ($query) {
-                $query->where('department_id', $this->department);
-            })
-            ->when($this->status, function ($query) {
-                $query->where('status', $this->status);
-            })
-            ->latest()
-            ->paginate(10);
+        // Use repository instead of direct model query
+        $files = $this->fileRepository->searchFiles(
+            $this->search,
+            $this->department,
+            $this->status
+        );
 
         return view('livewire.file-management-table', [
             'files' => $files,
