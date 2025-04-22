@@ -63,4 +63,25 @@ class BorrowingRepository extends BaseRepository implements BorrowingRepositoryI
 
         return $borrowing;
     }
+
+    public function getFilteredBorrowings($search = null, $status = null)
+    {
+        $query = $this->model->with(['file.department', 'officer']);
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('borrower_name', 'like', "%{$search}%")
+                    ->orWhereHas('file', function ($fileQuery) use ($search) {
+                        $fileQuery->where('reference_no', 'like', "%{$search}%")
+                            ->orWhere('title', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        return $query->orderBy('borrow_date', 'desc')->paginate(10);
+    }
 }

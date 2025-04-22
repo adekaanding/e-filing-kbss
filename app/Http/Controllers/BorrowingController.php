@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Repositories\Interfaces\BorrowingRepositoryInterface;
 use App\Repositories\Interfaces\FileRepositoryInterface;
 use App\Models\Department;
+use App\Models\Borrowing;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -64,6 +65,36 @@ class BorrowingController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->withInput()->with('error', $e->getMessage());
+        }
+    }
+
+    /**
+     * Process file return
+     */
+    public function return(Request $request, $id)
+    {
+        $request->validate([
+            'confirmation' => 'required|in:confirm'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $borrowing = $this->borrowingRepository->find($id);
+
+            // Check if borrowing exists and is active
+            if (!$borrowing || $borrowing->status === Borrowing::STATUS_RETURNED) {
+                throw new \Exception('Invalid borrowing record or already returned.');
+            }
+
+            // Process the return
+            $this->borrowingRepository->registerReturn($id);
+
+            DB::commit();
+            return redirect()->back()->with('success', 'File has been successfully returned.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

@@ -14,8 +14,13 @@ class HistoryController extends Controller
         $this->borrowingRepository = $borrowingRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return view('history.index');
+        $status = $request->query('status');
+        $search = $request->query('search');
+
+        $borrowings = $this->borrowingRepository->getFilteredBorrowings($search, $status);
+
+        return view('history.index', compact('borrowings', 'status'));
     }
 }

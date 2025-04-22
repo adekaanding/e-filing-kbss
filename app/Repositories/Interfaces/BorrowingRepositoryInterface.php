@@ -10,4 +10,5 @@ interface BorrowingRepositoryInterface extends RepositoryInterface
     public function getByBorrower($borrowerName);
     public function registerBorrowing($fileId, $borrowerName, $officerId);
     public function registerReturn($id);
+    public function getFilteredBorrowings($search = null, $status = null);
 }
