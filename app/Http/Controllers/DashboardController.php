@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Repositories\Interfaces\FileRepositoryInterface;
 use App\Repositories\Interfaces\BorrowingRepositoryInterface;
+use App\Repositories\Interfaces\DepartmentRepositoryInterface;
 use App\Models\Borrowing;
 use Carbon\Carbon;
 
@@ -12,13 +13,16 @@ class DashboardController extends Controller
 {
     protected $fileRepository;
     protected $borrowingRepository;
+    protected $departmentRepository;
 
     public function __construct(
         FileRepositoryInterface $fileRepository,
-        BorrowingRepositoryInterface $borrowingRepository
+        BorrowingRepositoryInterface $borrowingRepository,
+        DepartmentRepositoryInterface $departmentRepository // Add this line
     ) {
         $this->fileRepository = $fileRepository;
         $this->borrowingRepository = $borrowingRepository;
+        $this->departmentRepository = $departmentRepository; // Add this line
     }
 
     public function index()
@@ -41,14 +45,44 @@ class DashboardController extends Controller
             }
         }
 
+        // Get department distribution data
+        $departmentDistribution = $this->getDepartmentDistribution();
+
         return view('dashboard.index', compact(
             'availableCount',
             'borrowedCount',
             'overdueCount',
-            'recentBorrowings'
+            'recentBorrowings',
+            'departmentDistribution'
         ));
     }
 
+    /**
+     * Get file distribution by department
+     */
+    private function getDepartmentDistribution()
+    {
+        $departments = $this->departmentRepository->all();
+        $distribution = [];
+
+        foreach ($departments as $department) {
+            $files = $this->fileRepository->getFilesByDepartment($department->id);
+
+            $available = $files->where('status', 'Available')->count();
+            $borrowed = $files->where('status', 'Dalam Pinjaman')->count();
+            $overdue = $files->where('status', 'Belum Dikembalikan')->count();
+
+            $distribution[] = [
+                'department' => $department->name,
+                'available' => $available,
+                'borrowed' => $borrowed,
+                'overdue' => $overdue,
+                'total' => $files->count()
+            ];
+        }
+
+        return $distribution;
+    }
     /**
      * Calculate business days (Monday-Friday) between two dates.
      *

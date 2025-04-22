@@ -184,7 +184,61 @@
         </form>
     </div>
 </div>
-
+<div class="mt-8">
+    <div class="card">
+        <h2 class="text-xl font-semibold mb-4">Department File Distribution</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Files</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">In Loan</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Overdue</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distribution</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    @forelse ($departmentDistribution as $dept)
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm font-medium text-gray-900">{{ $dept['department'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900">{{ $dept['total'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-green-500">{{ $dept['available'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-yellow-500">{{ $dept['borrowed'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-red-500">{{ $dept['overdue'] }}</div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="w-full bg-gray-200 rounded-full h-2.5">
+                                @if($dept['total'] > 0)
+                                <div class="flex h-2.5 rounded-full">
+                                    <div class="bg-green-500 h-2.5 rounded-l-full" style="width: {{ ($dept['available']/$dept['total'])*100 }}%"></div>
+                                    <div class="bg-yellow-500 h-2.5" style="width: {{ ($dept['borrowed']/$dept['total'])*100 }}%"></div>
+                                    <div class="bg-red-500 h-2.5 rounded-r-full" style="width: {{ ($dept['overdue']/$dept['total'])*100 }}%"></div>
+                                </div>
+                                @endif
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-gray-500" colspan="6">No departments found</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <script>
     function openReturnModal(borrowingId, fileReference) {
         document.getElementById('fileRef').textContent = fileReference;
