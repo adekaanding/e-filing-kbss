@@ -9,6 +9,7 @@ app/Http/Controllers/AuthController.php
 app/Http/Controllers/BorrowingController.php
 app/Http/Controllers/Controller.php
 app/Http/Controllers/DashboardController.php
+app/Http/Controllers/DepartmentController.php
 app/Http/Controllers/FileController.php
 app/Http/Controllers/HistoryController.php
 app/Http/Kernel.php
@@ -89,6 +90,10 @@ resources/views/auth/login.blade.php
 resources/views/auth/profile.blade.php
 resources/views/borrowings/form.blade.php
 resources/views/dashboard/index.blade.php
+resources/views/departments/create.blade.php
+resources/views/departments/edit.blade.php
+resources/views/departments/index.blade.php
+resources/views/departments/show.blade.php
 resources/views/files/index.blade.php
 resources/views/history/index.blade.php
 resources/views/layouts/app.blade.php

@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\BorrowingController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\DepartmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     // File routes - Accessible only by File Admin
     Route::middleware(['check.role:admin'])->group(function () {
         Route::resource('files', FileController::class);
+        Route::resource('departments', DepartmentController::class);
     });
 
     // Borrowing routes - Accessible by both File Admin and File Officer

@@ -37,6 +37,9 @@
                 <a href="{{ route('files.index') }}" class="flex items-center px-6 py-3 hover:bg-gray-100 {{ request()->routeIs('files.index') ? 'bg-gray-100 border-l-4 border-primary' : '' }}">
                     <span class="mx-3">File Management</span>
                 </a>
+                <a href="{{ route('departments.index') }}" class="flex items-center px-6 py-3 hover:bg-gray-100 {{ request()->routeIs('departments.*') ? 'bg-gray-100 border-l-4 border-primary' : '' }}">
+                    <span class="mx-3">Department Management</span>
+                </a>
             </nav>
         </div>
 
