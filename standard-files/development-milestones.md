@@ -138,3 +138,38 @@
   * Authentication is built on Laravel's built-in auth system for security and maintainability
   * Routes are organized by role requirements, simplifying permission management
   * Profile management is lightweight, focusing on basic user information without password changing functionality
+
+## **[Milestone: Subphase 2.1 Department Management]**
+
+* **Date Completed:** April 22, 2025
+
+* **Main Feature Implemented:**
+  * Created department management system with full CRUD functionality, role-based access control, and relationship display between departments and files.
+
+* **Key Files Created/Updated:**
+  * (NEW) app/Http/Controllers/DepartmentController.php
+  * (NEW) resources/views/departments/index.blade.php
+  * (NEW) resources/views/departments/create.blade.php
+  * (NEW) resources/views/departments/edit.blade.php
+  * (NEW) resources/views/departments/show.blade.php
+  * Updated routes/web.php (added DepartmentController import and resource routes)
+  * Updated resources/views/layouts/app.blade.php (added department management sidebar link)
+
+* **Summary of Changes:**
+  * Implemented DepartmentController with full CRUD operations following repository pattern
+  * Created views for listing, creating, editing, and viewing departments with Tailwind CSS
+  * Added relationship display to show files belonging to a department
+  * Configured validation rules for department name (required, unique, max length)
+  * Implemented success messaging for CRUD operations
+  * Added middleware protection to restrict access to File Admin role
+  * Added navigation link in the sidebar for Department Management
+  * Ensured proper error handling and form validation
+
+* **Notes & Observations:**
+  * The implementation maintains consistent use of the repository pattern established in earlier phases
+  * Role-based access control was implemented using the existing CheckRole middleware
+  * The views follow existing UI patterns and Tailwind CSS styling from the file management module
+  * The error was resolved by adding the controller import in the routes file
+  * The department management system provides a foundation for file management as files are associated with departments
+  * All UI elements maintain responsive design following the existing project conventions
+  * The code follows the SOLID principles outlined in the architecture document
