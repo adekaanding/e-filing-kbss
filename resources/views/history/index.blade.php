@@ -26,6 +26,26 @@
         </div>
     </div>
 
+    <!-- Overdue Stats Summary (only shown when filtering by overdue) -->
+    @if(request('status') == 'Belum Dikembalikan' && $borrowings->total() > 0)
+    <div class="bg-red-50 border border-red-200 rounded-md p-4 mb-6">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-800">Overdue Files Summary</h3>
+                <div class="mt-2 text-sm text-red-700">
+                    <p>There {{ $borrowings->total() == 1 ? 'is' : 'are' }} currently <strong>{{ $borrowings->total() }}</strong> overdue {{ Str::plural('file', $borrowings->total()) }}.</p>
+                    <p class="mt-1">Please follow up with the borrowers to ensure these files are returned promptly.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endif
+
     <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -40,7 +60,7 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse ($borrowings as $borrowing)
-                <tr>
+                <tr class="{{ $borrowing->status == 'Belum Dikembalikan' ? 'bg-red-50' : '' }}">
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="font-medium text-gray-900">{{ $borrowing->file->reference_no }}</div>
                         <div class="text-sm text-gray-500">{{ $borrowing->file->title }}</div>
@@ -52,6 +72,15 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="text-sm text-gray-900">{{ $borrowing->borrow_date->format('d/m/Y') }}</div>
                         <div class="text-xs text-gray-500">{{ $borrowing->borrow_date->format('h:i A') }}</div>
+                        @if(isset($borrowing->days_overdue) && $borrowing->days_overdue > 0)
+                        <div class="text-xs text-red-600 font-semibold mt-1">
+                            Overdue by: {{ $borrowing->days_overdue }} {{ Str::plural('business day', $borrowing->days_overdue) }}
+                        </div>
+                        @elseif(isset($borrowing->days_late) && $borrowing->days_late > 0)
+                        <div class="text-xs text-orange-600 mt-1">
+                            Returned {{ $borrowing->days_late }} {{ Str::plural('day', $borrowing->days_late) }} late
+                        </div>
+                        @endif
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         @if ($borrowing->return_date)
@@ -71,7 +100,7 @@
                             {{ $borrowing->status }}
                         </span>
                         @else
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 animate-pulse">
                             {{ $borrowing->status }}
                         </span>
                         @endif
@@ -80,8 +109,8 @@
                         @if ($borrowing->status != 'Dikembalikan')
                         <button
                             onclick="openReturnModal({{ $borrowing->id }}, '{{ $borrowing->file->reference_no }}')"
-                            class="text-indigo-600 hover:text-indigo-900">
-                            Process Return
+                            class="{{ $borrowing->status == 'Belum Dikembalikan' ? 'text-red-600 hover:text-red-900 font-medium' : 'text-indigo-600 hover:text-indigo-900' }}">
+                            {{ $borrowing->status == 'Belum Dikembalikan' ? 'Process Overdue Return' : 'Process Return' }}
                         </button>
                         @else
                         <span class="text-gray-400">Already Returned</span>
