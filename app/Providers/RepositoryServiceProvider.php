@@ -6,9 +6,11 @@ use Illuminate\Support\ServiceProvider;
 use App\Repositories\Interfaces\DepartmentRepositoryInterface;
 use App\Repositories\Interfaces\FileRepositoryInterface;
 use App\Repositories\Interfaces\BorrowingRepositoryInterface;
+use App\Repositories\Interfaces\UserRepositoryInterface;
 use App\Repositories\DepartmentRepository;
 use App\Repositories\FileRepository;
 use App\Repositories\BorrowingRepository;
+use App\Repositories\UserRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -30,6 +32,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             BorrowingRepositoryInterface::class,
             BorrowingRepository::class
+        );
+
+        $this->app->bind(
+            UserRepositoryInterface::class,
+            UserRepository::class
         );
     }
 
