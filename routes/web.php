@@ -42,6 +42,11 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['check.role:admin'])->group(function () {
         Route::resource('files', FileController::class);
         Route::resource('departments', DepartmentController::class);
+
+        // File Status Workflow routes
+        Route::get('/files/{id}/status-history', [FileController::class, 'statusHistory'])->name('files.status-history');
+        Route::get('/files/{id}/change-status', [FileController::class, 'changeStatus'])->name('files.change-status');
+        Route::patch('/files/{id}/update-status', [FileController::class, 'updateStatus'])->name('files.update-status');
     });
 
     // Borrowing routes - Accessible by both File Admin and File Officer

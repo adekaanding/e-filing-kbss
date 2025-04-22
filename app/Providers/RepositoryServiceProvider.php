@@ -38,6 +38,11 @@ class RepositoryServiceProvider extends ServiceProvider
             UserRepositoryInterface::class,
             UserRepository::class
         );
+
+        $this->app->bind(
+            \App\Repositories\Interfaces\FileStatusLogRepositoryInterface::class,
+            \App\Repositories\FileStatusLogRepository::class
+        );
     }
 
     /**

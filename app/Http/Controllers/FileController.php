@@ -115,4 +115,51 @@ class FileController extends Controller
         return redirect()->route('files.index')
             ->with('success', 'File deleted successfully.');
     }
+
+    /**
+     * Show the file status history.
+     */
+    public function statusHistory($id)
+    {
+        $file = $this->fileRepository->find($id);
+        $statusLogs = $this->fileRepository->getStatusHistory($id);
+
+        return view('files.status_history', compact('file', 'statusLogs'));
+    }
+
+    /**
+     * Show form to change file status.
+     */
+    public function changeStatus($id)
+    {
+        $file = $this->fileRepository->find($id);
+        $statuses = [
+            File::STATUS_AVAILABLE => File::STATUS_AVAILABLE,
+            File::STATUS_BORROWED => File::STATUS_BORROWED,
+            File::STATUS_OVERDUE => File::STATUS_OVERDUE
+        ];
+
+        return view('files.change_status', compact('file', 'statuses'));
+    }
+
+    /**
+     * Update the file status.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:' . File::STATUS_AVAILABLE . ',' . File::STATUS_BORROWED . ',' . File::STATUS_OVERDUE,
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        $this->fileRepository->changeStatus(
+            $id,
+            $validated['status'],
+            auth()->id(),
+            $validated['notes'] ?? null
+        );
+
+        return redirect()->route('files.show', $id)
+            ->with('success', 'File status updated successfully.');
+    }
 }

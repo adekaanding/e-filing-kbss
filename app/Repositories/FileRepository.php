@@ -3,7 +3,10 @@
 namespace App\Repositories;
 
 use App\Models\File;
+use App\Models\FileStatusLog;
 use App\Repositories\Interfaces\FileRepositoryInterface;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class FileRepository extends BaseRepository implements FileRepositoryInterface
 {
@@ -58,5 +61,67 @@ class FileRepository extends BaseRepository implements FileRepositoryInterface
         }
 
         return $query->latest()->paginate(10);
+    }
+
+    /**
+     * Change the status of a file and log the change.
+     */
+    public function changeStatus($id, $newStatus, $userId, $notes = null)
+    {
+        $file = $this->find($id);
+        $oldStatus = $file->status;
+
+        // Only proceed if the status is actually changing
+        if ($oldStatus !== $newStatus) {
+            DB::transaction(function () use ($file, $oldStatus, $newStatus, $userId, $notes) {
+                // Update the file status
+                $file->status = $newStatus;
+                $file->save();
+
+                // Create a log entry
+                FileStatusLog::create([
+                    'file_id' => $file->id,
+                    'user_id' => $userId,
+                    'old_status' => $oldStatus,
+                    'new_status' => $newStatus,
+                    'notes' => $notes
+                ]);
+            });
+        }
+
+        return $file;
+    }
+
+    /**
+     * Mark a file as available.
+     */
+    public function markAsAvailable($id, $userId, $notes = null)
+    {
+        return $this->changeStatus($id, File::STATUS_AVAILABLE, $userId, $notes);
+    }
+
+    /**
+     * Mark a file as borrowed.
+     */
+    public function markAsBorrowed($id, $userId, $notes = null)
+    {
+        return $this->changeStatus($id, File::STATUS_BORROWED, $userId, $notes);
+    }
+
+    /**
+     * Mark a file as overdue.
+     */
+    public function markAsOverdue($id, $userId, $notes = null)
+    {
+        return $this->changeStatus($id, File::STATUS_OVERDUE, $userId, $notes);
+    }
+
+    /**
+     * Get the status history of a file.
+     */
+    public function getStatusHistory($id)
+    {
+        $file = $this->find($id);
+        return $file->statusLogs()->with('user')->orderBy('created_at', 'desc')->get();
     }
 }

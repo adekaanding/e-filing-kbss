@@ -27,6 +27,7 @@ app/Livewire/FileManagementTable.php
 app/Models/Borrowing.php
 app/Models/Department.php
 app/Models/File.php
+app/Models/FileStatusLog.php
 app/Models/User.php
 app/Providers/AppServiceProvider.php
 app/Providers/AuthServiceProvider.php
@@ -38,9 +39,11 @@ app/Repositories/BaseRepository.php
 app/Repositories/BorrowingRepository.php
 app/Repositories/DepartmentRepository.php
 app/Repositories/FileRepository.php
+app/Repositories/FileStatusLogRepository.php
 app/Repositories/Interfaces/BorrowingRepositoryInterface.php
 app/Repositories/Interfaces/DepartmentRepositoryInterface.php
 app/Repositories/Interfaces/FileRepositoryInterface.php
+app/Repositories/Interfaces/FileStatusLogRepositoryInterface.php
 app/Repositories/Interfaces/RepositoryInterface.php
 app/Repositories/Interfaces/UserRepositoryInterface.php
 app/Repositories/UserRepository.php
@@ -73,6 +76,7 @@ database/migrations/2019_12_14_000001_create_personal_access_tokens_table.php
 database/migrations/2025_04_21_075923_create_departments_table.php
 database/migrations/2025_04_21_075944_create_files_table.php
 database/migrations/2025_04_21_080006_create_borrowings_table.php
+database/migrations/2025_04_22_053734_create_file_status_logs_table.php
 database/seeders/DatabaseSeeder.php
 database/seeders/DepartmentSeeder.php
 database/seeders/FileSeeder.php
@@ -95,9 +99,11 @@ resources/views/departments/create.blade.php
 resources/views/departments/edit.blade.php
 resources/views/departments/index.blade.php
 resources/views/departments/show.blade.php
+resources/views/files/change_status.blade.php
 resources/views/files/create.blade.php
 resources/views/files/edit.blade.php
 resources/views/files/index.blade.php
+resources/views/files/partials/_status_history.blade.php
 resources/views/files/show.blade.php
 resources/views/history/index.blade.php
 resources/views/layouts/app.blade.php

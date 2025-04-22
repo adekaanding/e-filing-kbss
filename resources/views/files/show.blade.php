@@ -89,5 +89,7 @@
             </table>
         </div>
     </div>
+    <!-- File Status History -->
+    @include('files.partials._status_history')
 </div>
 @endsection

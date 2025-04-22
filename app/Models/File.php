@@ -69,4 +69,36 @@ class File extends Model
     {
         return $query->where('status', self::STATUS_OVERDUE);
     }
+
+    /**
+     * Get the status logs for the file.
+     */
+    public function statusLogs(): HasMany
+    {
+        return $this->hasMany(FileStatusLog::class);
+    }
+
+    /**
+     * Check if the file is available.
+     */
+    public function isAvailable(): bool
+    {
+        return $this->status === self::STATUS_AVAILABLE;
+    }
+
+    /**
+     * Check if the file is borrowed.
+     */
+    public function isBorrowed(): bool
+    {
+        return $this->status === self::STATUS_BORROWED;
+    }
+
+    /**
+     * Check if the file is overdue.
+     */
+    public function isOverdue(): bool
+    {
+        return $this->status === self::STATUS_OVERDUE;
+    }
 }
